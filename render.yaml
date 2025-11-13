@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: emotion-detector
+    env: python
+    buildCommand: |
+      apt-get update && apt-get install -y curl gcc g++ rustc
+      pip install --upgrade pip
+      pip install -r requirements.txt
+    startCommand: gunicorn app:app

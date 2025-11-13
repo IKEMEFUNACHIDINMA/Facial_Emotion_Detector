@@ -1,23 +1,36 @@
 
-from PIL import Image
-import torch
 import numpy as np
-from transformers import AutoFeatureExtractor, AutoModelForImageClassification
+import pandas as pd
+from keras.models import Sequential
+from keras.layers import Dense, Conv2D, Flatten, Dropout, MaxPooling2D
+from keras.preprocessing.image import ImageDataGenerator
+from keras.models import load_model
 
-MODEL_NAME = "mo-thecreator/vit-Facial-Expression-Recognition"
+def create_model():
+    model = Sequential()
+    model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(48, 48, 1)))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Flatten())
+    model.add(Dense(128, activation='relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(7, activation='softmax'))  # Assuming 7 emotions
 
-class EmotionModel:
-    def __init__(self, device=None):
-        self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
-        self.feature_extractor = AutoFeatureExtractor.from_pretrained(MODEL_NAME)
-        self.model = AutoModelForImageClassification.from_pretrained(MODEL_NAME).to(self.device)
-        self.id2label = getattr(self.model.config, "id2label", {i: str(i) for i in range(self.model.config.num_labels)})
+    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+    return model
 
-    def predict(self, pil_image):
-        inputs = self.feature_extractor(images=pil_image, return_tensors="pt")
-        inputs = {k: v.to(self.device) for k, v in inputs.items()}
-        with torch.no_grad():
-            outputs = self.model(**inputs)
-            scores = torch.nn.functional.softmax(outputs.logits, dim=-1).cpu().numpy()[0]
-        result = {self.id2label[i]: float(scores[i]) for i in range(len(scores))}
-        return dict(sorted(result.items(), key=lambda kv: kv[1], reverse=True))
+def train_model():
+    # Load dataset (You need to implement your dataset loading)
+    # Example: data = pd.read_csv('path_to_your_dataset.csv')
+    
+    # Data preprocessing steps here...
+    
+    model = create_model()
+    
+    # Fit the model (you need to replace train_data and train_labels)
+    # model.fit(train_data, train_labels, epochs=10, validation_split=0.1)
+    
+    model.save('trained_models/model.h5')
+
+if __name__ =="__main__":
+    train_model()
+

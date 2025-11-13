@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Emotion Detection Web App</title>
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
 </head>
 <body>
     <div class="container">
@@ -245,7 +246,7 @@ async function captureAndDetect() {
             document.getElementById('result-emotion').textContent = data.emotion;
             document.getElementById('result-confidence').textContent = data.confidence;
             document.getElementById('result-session').textContent = data.session_id;
-            document.getElementById('emotion-icon').textContent = emotionIcons[data.emotion]  || '😐';
+            document.getElementById('emotion-icon').textContent = emotionIcons[data.emotion] || '😐';
             document.getElementById('emotion-text').textContent = data.emotion;
             document.getElementById('results-section').style.display = 'block';
             document.getElementById('results-section').scrollIntoView({ behavior: 'smooth' });
