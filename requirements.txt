@@ -6,6 +6,5 @@ opencv-python
 pymongo
 torch
 torchvision
-fer-pytorch
 pillow
 
